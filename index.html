@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agiloft CLM · Project Status · Cronos Europa</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cronos-red: #C0001A;
+    --cronos-dark: #1a1a2e;
+    --cronos-navy: #16213e;
+    --text-primary: #0f172a;
+    --text-secondary: #475569;
+    --text-muted: #94a3b8;
+    --surface: #ffffff;
+    --surface-2: #f8fafc;
+    --surface-3: #f1f5f9;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --green: #16a34a;
+    --green-bg: #dcfce7;
+    --amber: #d97706;
+    --amber-bg: #fef3c7;
+    --blue: #1d4ed8;
+    --blue-bg: #dbeafe;
+    --slate: #475569;
+    --slate-bg: #f1f5f9;
+    --red: #dc2626;
+    --red-bg: #fee2e2;
+  }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #f0f4f8;
+    color: var(--text-primary);
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--cronos-dark);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: repeating-linear-gradient(
+      90deg,
+      transparent,
+      transparent 60px,
+      rgba(255,255,255,0.015) 60px,
+      rgba(255,255,255,0.015) 61px
+    );
+    pointer-events: none;
+  }
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 40px 32px 36px;
+    display: flex;
+    align-items: flex-start;
+    gap: 24px;
+    position: relative;
+    z-index: 1;
+  }
+  .logo-mark {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .logo-mark img { height: 52px; width: auto; display: block; }
+  .header-text { flex: 1; }
+  .header-eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-size: 26px;
+    font-weight: 600;
+    color: #ffffff;
+    line-height: 1.2;
+    margin-bottom: 8px;
+  }
+  .header-meta {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .header-meta span {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+  }
+  .header-meta strong {
+    color: rgba(255,255,255,0.8);
+    font-weight: 500;
+  }
+  .deadline-badge {
+    background: rgba(192,0,26,0.25);
+    border: 1px solid rgba(192,0,26,0.5);
+    color: #ff8a94;
+    font-size: 12px;
+    font-weight: 500;
+    padding: 4px 12px;
+    border-radius: 6px;
+    white-space: nowrap;
+    align-self: flex-start;
+    margin-top: 6px;
+  }
+
+  /* PHASE STRIP */
+  .phase-strip {
+    background: var(--cronos-navy);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .phase-strip-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 32px;
+    display: flex;
+    overflow-x: auto;
+  }
+  .phase-tab {
+    padding: 14px 20px;
+    font-size: 13px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.4);
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    position: relative;
+  }
+  .phase-tab.done { color: rgba(255,255,255,0.6); border-bottom-color: rgba(22,163,74,0.6); }
+  .phase-tab.active { color: #ffffff; border-bottom-color: var(--cronos-red); }
+  .phase-tab.pending { color: rgba(255,255,255,0.3); }
+  .phase-dot {
+    display: inline-block;
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    margin-right: 7px;
+    vertical-align: middle;
+    position: relative;
+    top: -1px;
+  }
+  .done .phase-dot { background: #16a34a; }
+  .active .phase-dot { background: var(--cronos-red); }
+  .pending .phase-dot { background: rgba(255,255,255,0.2); }
+
+  /* CONTENT */
+  .content {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 32px 32px 64px;
+  }
+
+  /* SUMMARY CARDS */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .summary-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 18px;
+  }
+  .summary-label {
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin-bottom: 6px;
+  }
+  .summary-value {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1;
+    margin-bottom: 3px;
+  }
+  .summary-sub {
+    font-size: 12px;
+    color: var(--text-secondary);
+  }
+  .summary-value.red { color: var(--cronos-red); }
+  .summary-value.green { color: var(--green); }
+  .summary-value.amber { color: var(--amber); }
+
+  /* SECTION */
+  .section { margin-bottom: 28px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+  }
+  .section-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* PHASE CARDS */
+  .phases-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .phase-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 18px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .phase-card.active-phase {
+    border-color: var(--cronos-red);
+  }
+  .phase-card.active-phase::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--cronos-red);
+  }
+  .phase-card.done-phase {
+    border-color: rgba(22,163,74,0.3);
+  }
+  .phase-card.done-phase::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 3px;
+    background: var(--green);
+  }
+  .phase-card-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    gap: 8px;
+  }
+  .phase-card-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.2;
+  }
+  .phase-card-dates {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+    font-family: 'DM Mono', monospace;
+  }
+  .phase-status-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .badge-done { background: var(--green-bg); color: var(--green); }
+  .badge-active { background: var(--red-bg); color: var(--red); }
+  .badge-parallel { background: var(--amber-bg); color: var(--amber); }
+  .badge-pending { background: var(--slate-bg); color: var(--slate); }
+  .badge-postlive { background: var(--blue-bg); color: var(--blue); }
+
+  .phase-deliverables {
+    list-style: none;
+    margin-top: 10px;
+  }
+  .phase-deliverables li {
+    font-size: 13px;
+    color: var(--text-secondary);
+    padding: 3px 0;
+    padding-left: 16px;
+    position: relative;
+    line-height: 1.4;
+  }
+  .phase-deliverables li::before {
+    content: '·';
+    position: absolute;
+    left: 4px;
+    color: var(--text-muted);
+  }
+
+  /* MILESTONES TABLE */
+  .milestones-table {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+  }
+  .milestones-table table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .milestones-table th {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.07em;
+    color: var(--text-muted);
+    padding: 10px 16px;
+    background: var(--surface-2);
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+  }
+  .milestones-table td {
+    padding: 11px 16px;
+    font-size: 13px;
+    border-bottom: 1px solid var(--surface-3);
+    vertical-align: middle;
+    color: var(--text-primary);
+  }
+  .milestones-table tr:last-child td { border-bottom: none; }
+  .milestones-table tr:hover td { background: var(--surface-2); }
+  .milestone-name { font-weight: 500; }
+  .milestone-date {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+  .milestone-owner { color: var(--text-secondary); font-size: 12px; }
+  .status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 5px;
+    white-space: nowrap;
+  }
+  .status-pill::before {
+    content: '';
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .pill-done { background: var(--green-bg); color: var(--green); }
+  .pill-done::before { background: var(--green); }
+  .pill-nearlyDone { background: #f0fdf4; color: #4ade80; border: 1px solid #bbf7d0; }
+  .pill-nearlyDone::before { background: #86efac; }
+  .pill-progress { background: var(--amber-bg); color: var(--amber); }
+  .pill-progress::before { background: var(--amber); }
+  .pill-pending { background: var(--slate-bg); color: var(--slate); }
+  .pill-pending::before { background: var(--slate); }
+  .pill-critical { background: var(--red-bg); color: var(--red); }
+  .pill-critical::before { background: var(--red); }
+
+  /* DELIVERABLES */
+  .deliverables-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .deliverable-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+  .deliverable-icon {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 15px;
+  }
+  .icon-done { background: var(--green-bg); }
+  .icon-progress { background: var(--amber-bg); }
+  .icon-pending { background: var(--slate-bg); }
+  .deliverable-body { flex: 1; min-width: 0; }
+  .deliverable-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 2px;
+    line-height: 1.3;
+  }
+  .deliverable-detail {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.4;
+  }
+  .deliverable-status {
+    font-size: 11px;
+    font-weight: 600;
+    margin-top: 6px;
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .ds-done { background: var(--green-bg); color: var(--green); }
+  .ds-progress { background: var(--amber-bg); color: var(--amber); }
+  .ds-pending { background: var(--slate-bg); color: var(--slate); }
+
+  /* TEAM TABLE */
+  .team-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .avatar {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 600;
+    flex-shrink: 0;
+  }
+  .av-red { background: #fee2e2; color: #dc2626; }
+  .av-blue { background: #dbeafe; color: #1d4ed8; }
+  .av-green { background: #dcfce7; color: #15803d; }
+  .av-amber { background: #fef3c7; color: #b45309; }
+  .av-purple { background: #ede9fe; color: #6d28d9; }
+  .av-teal { background: #ccfbf1; color: #0f766e; }
+  .team-name { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 1px; }
+  .team-org { font-size: 11px; color: var(--text-muted); margin-bottom: 2px; }
+  .team-role { font-size: 12px; color: var(--text-secondary); }
+
+  /* RISKS */
+  .risks-list { display: flex; flex-direction: column; gap: 8px; }
+  .risk-item {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .risk-badge {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    padding: 3px 8px;
+    border-radius: 5px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .risk-high { background: var(--red-bg); color: var(--red); }
+  .risk-med { background: var(--amber-bg); color: var(--amber); }
+  .risk-low { background: var(--green-bg); color: var(--green); }
+  .risk-text { font-size: 13px; color: var(--text-primary); font-weight: 500; line-height: 1.3; }
+  .risk-mitigation { font-size: 12px; color: var(--text-secondary); margin-top: 3px; line-height: 1.4; }
+
+  /* FOOTER */
+  .footer {
+    background: var(--cronos-dark);
+    padding: 24px 32px;
+    text-align: center;
+  }
+  .footer-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .footer p {
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+  }
+  .footer strong { color: rgba(255,255,255,0.6); font-weight: 500; }
+
+  /* PROGRESS BAR */
+  .progress-wrap { margin-top: 10px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 5px;
+  }
+  .progress-bar {
+    height: 4px;
+    background: var(--surface-3);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 0.3s;
+  }
+  .fill-green { background: var(--green); }
+  .fill-red { background: var(--cronos-red); }
+  .fill-amber { background: var(--amber); }
+
+  @media (max-width: 680px) {
+    .summary-grid { grid-template-columns: 1fr 1fr; }
+    .phases-grid, .deliverables-grid, .team-grid { grid-template-columns: 1fr; }
+    .header-inner { flex-direction: column; gap: 16px; }
+    .content { padding: 20px 16px 48px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="logo-mark"><img src="data:image/png;base64,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" alt="Cronos Europa"></div>
+    <div class="header-text">
+      <div class="header-eyebrow">Cronos Europa · Agiloft CLM Implementation</div>
+      <div class="header-title">Project Status Dashboard</div>
+      <div class="header-meta">
+        <span><strong>PM:</strong> Catalin Manea</span>
+        <span><strong>Sponsor:</strong> Ludwig Zimer</span>
+        <span><strong>Partner:</strong> SaaSam EU</span>
+        <span><strong>As of:</strong> 8 May 2026</span>
+      </div>
+    </div>
+    <div class="deadline-badge">⚠ Go-Live: 7 Aug 2026</div>
+  </div>
+</header>
+
+<div class="phase-strip">
+  <div class="phase-strip-inner">
+    <div class="phase-tab done"><span class="phase-dot"></span>Phase 0 · Kick-off</div>
+    <div class="phase-tab active"><span class="phase-dot"></span>Phase 1 · Discovery</div>
+    <div class="phase-tab pending"><span class="phase-dot"></span>Phase 2 · Configuration</div>
+    <div class="phase-tab pending"><span class="phase-dot"></span>Phase 3 · Integration</div>
+    <div class="phase-tab pending"><span class="phase-dot"></span>Phase 4 · UAT & Go-Live</div>
+    <div class="phase-tab pending"><span class="phase-dot"></span>Post Go-Live · AI Config</div>
+  </div>
+</div>
+
+<div class="content">
+
+  <!-- SUMMARY -->
+  <div class="summary-grid">
+    <div class="summary-card">
+      <div class="summary-label">Overall Status</div>
+      <div class="summary-value amber">On Track</div>
+      <div class="summary-sub">Week 3 of 15</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Days to Go-Live</div>
+      <div class="summary-value red">91</div>
+      <div class="summary-sub">Hard deadline · DIGIT TM III</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Deliverables</div>
+      <div class="summary-value green">4 / 8</div>
+      <div class="summary-sub">Confirmed &amp; approved</div>
+    </div>
+    <div class="summary-card">
+      <div class="summary-label">Open Blockers</div>
+      <div class="summary-value amber">1</div>
+      <div class="summary-sub">NetSuite access pending</div>
+    </div>
+  </div>
+
+  <!-- PHASES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Delivery Phases</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="phases-grid">
+
+      <div class="phase-card done-phase">
+        <div class="phase-card-header">
+          <div>
+            <div class="phase-card-name">Phase 0 · Kick-off</div>
+            <div class="phase-card-dates">22 Apr 2026</div>
+          </div>
+          <span class="phase-status-badge badge-done">Complete</span>
+        </div>
+        <ul class="phase-deliverables">
+          <li>Project Charter v2.0 signed off</li>
+          <li>SaaSam PSA executed (15 Apr)</li>
+          <li>Sandbox provisioned · SSO live</li>
+          <li>NetSuite API credentials requested</li>
+        </ul>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill fill-green" style="width:100%"></div></div>
+        </div>
+      </div>
+
+      <div class="phase-card active-phase">
+        <div class="phase-card-header">
+          <div>
+            <div class="phase-card-name">Phase 1 · Discovery</div>
+            <div class="phase-card-dates">27 Apr – 16 May 2026</div>
+          </div>
+          <span class="phase-status-badge badge-active">In Progress</span>
+        </div>
+        <ul class="phase-deliverables">
+          <li>Workflow Analysis v4.1 — ✓ Approved (Fotios &amp; Ludwig, 7 May)</li>
+          <li>Contract Types Config Sheet v4.1 — ✓ Approved</li>
+          <li>User Roles &amp; Permissions v2.0 — ✓ Cronos done · pending Tania/Ritesh</li>
+          <li>NetSuite Integration Spec v1.0 — ✓ &gt;90% done · 9 open questions pending</li>
+        </ul>
+        <div class="progress-wrap">
+          <div class="progress-label"><span>Progress</span><span>~90%</span></div>
+          <div class="progress-bar"><div class="progress-fill fill-red" style="width:90%"></div></div>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <div class="phase-card-header">
+          <div>
+            <div class="phase-card-name">Phase 2 · Platform Configuration</div>
+            <div class="phase-card-dates">18 May – 20 Jun 2026</div>
+          </div>
+          <span class="phase-status-badge badge-pending">Pending</span>
+        </div>
+        <ul class="phase-deliverables">
+          <li>Tables, fields, forms, approval workflows</li>
+          <li>DocuSign &amp; SSO configuration</li>
+          <li>Dashboards &amp; print templates</li>
+          <li>Show &amp; Tell demos (end of phase)</li>
+        </ul>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill fill-amber" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <div class="phase-card-header">
+          <div>
+            <div class="phase-card-name">Phase 3 · NetSuite Integration</div>
+            <div class="phase-card-dates">1 Jun – 11 Jul 2026 · parallel with Ph.2</div>
+          </div>
+          <span class="phase-status-badge badge-parallel">Parallel from Wk 7</span>
+        </div>
+        <ul class="phase-deliverables">
+          <li>Cronos IT builds Agiloft ↔ NetSuite connector</li>
+          <li>Trigger: Project creation on Won Request</li>
+          <li>Contract migration (Lift &amp; Shift)</li>
+          <li>SaaSam advisory (8 hrs)</li>
+        </ul>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill fill-amber" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <div class="phase-card-header">
+          <div>
+            <div class="phase-card-name">Phase 4 · UAT &amp; Go-Live</div>
+            <div class="phase-card-dates">13 Jul – 7 Aug 2026</div>
+          </div>
+          <span class="phase-status-badge badge-pending">Pending</span>
+        </div>
+        <ul class="phase-deliverables">
+          <li>UAT with CM/PMO team</li>
+          <li>End-to-end integration testing</li>
+          <li>Training (all user profiles)</li>
+          <li>PROD deployment · go-live 7 Aug</li>
+        </ul>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill fill-amber" style="width:0%"></div></div>
+        </div>
+      </div>
+
+      <div class="phase-card">
+        <div class="phase-card-header">
+          <div>
+            <div class="phase-card-name">Post Go-Live · AI Config</div>
+            <div class="phase-card-dates">10 – 31 Aug 2026 · Cronos only</div>
+          </div>
+          <span class="phase-status-badge badge-postlive">Post Go-Live</span>
+        </div>
+        <ul class="phase-deliverables">
+          <li>Agiloft Prompt Lab / AI configuration</li>
+          <li>Contract summaries &amp; red flag detection</li>
+          <li>Metadata extraction &amp; clause comparison</li>
+          <li>No SaaSam involvement</li>
+        </ul>
+        <div class="progress-wrap">
+          <div class="progress-bar"><div class="progress-fill fill-blue" style="width:0%"></div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- MILESTONES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Key Milestones</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="milestones-table">
+      <table>
+        <thead>
+          <tr>
+            <th style="width:40%">Milestone</th>
+            <th style="width:22%">Target Date</th>
+            <th style="width:20%">Owner</th>
+            <th style="width:18%">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="milestone-name">Project Charter v2.0 signed off</td>
+            <td class="milestone-date">22–25 Apr 2026</td>
+            <td class="milestone-owner">Catalin / Ludwig / Tania</td>
+            <td><span class="status-pill pill-done">Done</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">Sandbox provisioned &amp; SSO live</td>
+            <td class="milestone-date">22–25 Apr 2026</td>
+            <td class="milestone-owner">Agiloft / Cronos IT</td>
+            <td><span class="status-pill pill-done">Done</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">Workflow Analysis v4.1 approved</td>
+            <td class="milestone-date">7 May 2026</td>
+            <td class="milestone-owner">Fotios / Ludwig</td>
+            <td><span class="status-pill pill-done">Done</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">Contract Types Config Sheet v4.1 approved</td>
+            <td class="milestone-date">7 May 2026</td>
+            <td class="milestone-owner">Fotios / Ludwig</td>
+            <td><span class="status-pill pill-done">Done</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">Workflow Analysis &amp; Contract Types — signed off</td>
+            <td class="milestone-date">7 May 2026</td>
+            <td class="milestone-owner">Fotios / Ludwig / Catalin</td>
+            <td><span class="status-pill pill-nearlyDone">Nearly Done</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">NetSuite Integration Spec — signed off</td>
+            <td class="milestone-date">16 May 2026</td>
+            <td class="milestone-owner">Fotios / Catalin</td>
+            <td><span class="status-pill pill-nearlyDone">Nearly Done</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">Phase 3 integration build kick-off</td>
+            <td class="milestone-date">1 Jun 2026</td>
+            <td class="milestone-owner">Cronos IT / Catalin</td>
+            <td><span class="status-pill pill-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">UAT-ready environment</td>
+            <td class="milestone-date">20 Jun 2026</td>
+            <td class="milestone-owner">SaaSam / Catalin</td>
+            <td><span class="status-pill pill-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">UAT sign-off</td>
+            <td class="milestone-date">13 Jul 2026</td>
+            <td class="milestone-owner">Sotirios / Ludwig</td>
+            <td><span class="status-pill pill-pending">Pending</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name" style="font-weight:700; color: var(--cronos-red)">Go-Live — Hard Deadline (DIGIT TM III)</td>
+            <td class="milestone-date" style="font-weight:600; color: var(--cronos-red)">7 Aug 2026</td>
+            <td class="milestone-owner">Ludwig / Olivier</td>
+            <td><span class="status-pill pill-critical">Hard Deadline</span></td>
+          </tr>
+          <tr>
+            <td class="milestone-name">AI / Prompt Lab config complete</td>
+            <td class="milestone-date">31 Aug 2026</td>
+            <td class="milestone-owner">Catalin</td>
+            <td><span class="status-pill pill-pending">Pending</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- DELIVERABLES -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Phase 1 Deliverables</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="deliverables-grid">
+
+      <div class="deliverable-item">
+        <div class="deliverable-icon icon-done">✓</div>
+        <div class="deliverable-body">
+          <div class="deliverable-name">Workflow Analysis v4.1</div>
+          <div class="deliverable-detail">14 workflows · 7 categories · date-driven status model · unified status field</div>
+          <span class="deliverable-status ds-done">Approved — Fotios &amp; Ludwig · 7 May 2026</span>
+        </div>
+      </div>
+
+      <div class="deliverable-item">
+        <div class="deliverable-icon icon-done">✓</div>
+        <div class="deliverable-body">
+          <div class="deliverable-name">Contract Types Config Sheet v4.1</div>
+          <div class="deliverable-detail">FWC → Request → SC → Amendment/Renewal · 7 sections · field mapping complete</div>
+          <span class="deliverable-status ds-done">Approved — Fotios &amp; Ludwig · 7 May 2026</span>
+        </div>
+      </div>
+
+      <div class="deliverable-item">
+        <div class="deliverable-icon icon-done">✓</div>
+        <div class="deliverable-body">
+          <div class="deliverable-name">User Roles &amp; Permissions v2.0</div>
+          <div class="deliverable-detail">Groups, teams, access levels · CM / PMO / Admin / Requester profiles</div>
+          <span class="deliverable-status ds-done">Cronos done · pending Tania/Ritesh validation</span>
+        </div>
+      </div>
+
+      <div class="deliverable-item">
+        <div class="deliverable-icon icon-done">✓</div>
+        <div class="deliverable-body">
+          <div class="deliverable-name">NetSuite Integration Spec v1.0</div>
+          <div class="deliverable-detail">Single trigger: Opportunity POST on Contract Signed · Python middleware · OAuth 1.0a · 11 test cases defined</div>
+          <span class="deliverable-status ds-done">&gt;90% done · 9 open questions pending Fotios / Cronos IT</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Project Team</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="team-grid">
+      <div class="team-card">
+        <div class="avatar av-red">CM</div>
+        <div>
+          <div class="team-name">Catalin Manea</div>
+          <div class="team-org">Cronos Europa</div>
+          <div class="team-role">PM / BA / TA — Day-to-day lead</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="avatar av-blue">LZ</div>
+        <div>
+          <div class="team-name">Ludwig Zimer</div>
+          <div class="team-org">Cronos Europa</div>
+          <div class="team-role">IT Head / Sponsor — Governance &amp; escalation</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="avatar av-green">SK</div>
+        <div>
+          <div class="team-name">Sotirios Kalligeros</div>
+          <div class="team-org">Cronos Europa</div>
+          <div class="team-role">CM/PMO Head — Workflow sign-off &amp; UAT</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="avatar av-amber">FB</div>
+        <div>
+          <div class="team-name">Fotios Binas</div>
+          <div class="team-org">Cronos Europa</div>
+          <div class="team-role">NetSuite expert — process &amp; field validation</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="avatar av-purple">TM</div>
+        <div>
+          <div class="team-name">Tania McKay</div>
+          <div class="team-org">SaaSam EU</div>
+          <div class="team-role">Implementation PM — config &amp; advisory lead</div>
+        </div>
+      </div>
+      <div class="team-card">
+        <div class="avatar av-teal">OV</div>
+        <div>
+          <div class="team-name">Olivier Van Baerlem</div>
+          <div class="team-org">Cronos Europa</div>
+          <div class="team-role">CFO — DocuSign signing &amp; go-live authorisation</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RISKS -->
+  <div class="section">
+    <div class="section-header">
+      <span class="section-title">Key Risks</span>
+      <div class="section-line"></div>
+    </div>
+    <div class="risks-list">
+      <div class="risk-item">
+        <span class="risk-badge risk-med">MED / HIGH</span>
+        <div>
+          <div class="risk-text">Cronos IT capacity during Phase 3 (parallel with Phase 2 from Week 7)</div>
+          <div class="risk-mitigation">Mitigation: Confirm full-time IT availability from Wk 7; parallel start gives buffer; contingency to shift Phase 3 start by 1 week if needed.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <span class="risk-badge risk-med">MED / HIGH</span>
+        <div>
+          <div class="risk-text">Configuration changes during integration build (Phase 2/3 dependency)</div>
+          <div class="risk-mitigation">Mitigation: API spec locked at end of Phase 1 (16 May); weekly integration stand-up; all post-lock changes reviewed by Catalin before implementation.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <span class="risk-badge risk-med">MED / HIGH</span>
+        <div>
+          <div class="risk-text">NetSuite integration complexity exceeds estimates</div>
+          <div class="risk-mitigation">Mitigation: Detailed spec signed off in Phase 1; SaaSam advisory (8 hrs); stable API versions (Agiloft REST v1 / SuiteTalk 2025.2).</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <span class="risk-badge risk-low">LOW / CRIT</span>
+        <div>
+          <div class="risk-text">Go-live deadline missed (7 Aug 2026 · DIGIT TM III external constraint)</div>
+          <div class="risk-mitigation">Mitigation: 15-week plan with parallel phases targets 7 Aug; Phase 1 must-haves prioritised; Phase 2 nice-to-haves deferred if needed.</div>
+        </div>
+      </div>
+      <div class="risk-item">
+        <span class="risk-badge risk-low">ACTIVE BLOCKER</span>
+        <div>
+          <div class="risk-text">NetSuite test environment access not yet granted to Catalin</div>
+          <div class="risk-mitigation">Approved by Fotios &amp; Ludwig. Pending Olivier's access grant. NDA signing in progress.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <p><strong>Cronos Europa · Agiloft CLM Implementation</strong> · Confidential · Internal use only</p>
+    <p>Prepared by <strong>Catalin Manea</strong> · Updated <strong>8 May 2026</strong></p>
+  </div>
+</footer>
+
+</body>
+</html>
